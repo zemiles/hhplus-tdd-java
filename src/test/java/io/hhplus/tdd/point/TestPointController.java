@@ -33,4 +33,15 @@ class TestPointController {
 		assertEquals(testUserPoint, userPoint);
 	}
 
+	@Test
+	@DisplayName("사용자의 포인트 충전")
+	void charge() throws Exception {
+		UserPoint testUserPoint = new UserPoint(1L, 0, System.currentTimeMillis());
+		long amount = 1000;
+
+		pointService.charge(1L, 1000);
+
+		assertEquals(1000, pointService.point(1L));
+	}
+
 }
