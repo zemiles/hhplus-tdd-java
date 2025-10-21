@@ -17,7 +17,7 @@ public class PointService {
 
 	private PointHistoryTable pointHistoryTable;
 
-	public UserPoint point(Long id) {
+	public UserPoint point(long id) {
 		UserPoint userPoint = userPointTable.selectById(id);
 
 		if(userPoint != null) {
@@ -33,6 +33,10 @@ public class PointService {
 			userPointTable.insertOrUpdate(id, 0L);
 			return UserPoint.empty(id);
 		}
+	}
+
+	public UserPoint charge(long id, long amount) {
+		return null;
 	}
 
 }
