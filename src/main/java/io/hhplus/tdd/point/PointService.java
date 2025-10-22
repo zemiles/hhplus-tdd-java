@@ -36,6 +36,8 @@ public class PointService {
 	}
 
 	public UserPoint charge(long id, long amount) {
+
+
 		return null;
 	}
 
