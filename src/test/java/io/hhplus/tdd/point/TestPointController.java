@@ -2,17 +2,23 @@ package io.hhplus.tdd.point;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.validateMockitoUsage;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(PointController.class)
 class TestPointController {
@@ -20,9 +26,6 @@ class TestPointController {
 	private static final Logger log = LoggerFactory.getLogger(TestPointController.class);
 	@Autowired
 	private MockMvc mockMvc;
-
-	@MockBean
-	private PointController pointController;
 
 	@MockBean
 	private PointService pointService;
@@ -44,12 +47,24 @@ class TestPointController {
 		// given
 		long id = 1L;
 		long amount = 1000;
+		given(pointService.charge(id, amount)).willReturn(new UserPoint(id, amount, System.currentTimeMillis()));
 
 		//when
 		UserPoint charge = pointService.charge(id, amount);
 
+//		mockMvc.perform(patch("/point/{id}/charge", id)
+//						.contentType(MediaType.APPLICATION_JSON)
+//						.content(String.valueOf(amount)))
+//				.andExpect(status().isOk())
+//				.andExpect(jsonPath("$.id").value(id))
+//				.andExpect(jsonPath("$.point").value(amount));
+
+
 		//then
-		assertNull(charge);
+		assertEquals(1L, charge.id());
+//		assertEquals(1000, charge.point());
+
+		verify(pointService, times(1)).charge(id, amount);
 	}
 
 	@Test
@@ -61,6 +76,12 @@ class TestPointController {
 	@Test
 	@DisplayName("포인트를 사용")
 	void use() throws Exception {
+		long id = 1L;
+		long amount = 1000;
+
+//		UserPoint user = new UserPoint(id, amount, System.currentTimeMillis());
+
+//		pointService.
 
 	}
 
