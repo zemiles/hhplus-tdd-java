@@ -2,6 +2,9 @@ package io.hhplus.tdd.point;
 
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,33 +20,22 @@ public class PointService {
 	private PointHistoryTable pointHistoryTable;
 
 	public UserPoint point(long id) {
-		UserPoint userPoint = userPointTable.selectById(id);
+		List<PointHistory> pointHistories = pointHistoryTable.selectAllByUserId(id);
 
-		if(userPoint != null) {
-			List<PointHistory> pointHistories = pointHistoryTable.selectAllByUserId(id);
+		long totalAmount = pointHistories.stream()
+				.filter(pointHistory -> pointHistory.amount() > 0)
+				.mapToLong(PointHistory::amount)
+				.sum();
 
-			long totalAmount = pointHistories.stream()
-					.filter(pointHistory -> pointHistory.amount() > 0)
-					.mapToLong(PointHistory::amount)
-					.sum();
-
-			return new UserPoint(id, totalAmount, System.currentTimeMillis());
-		} else {
-			userPointTable.insertOrUpdate(id, 0L);
-			return UserPoint.empty(id);
-		}
+		return new UserPoint(id, totalAmount, userPointTable.selectById(id).updateMillis());
 	}
 
 	public UserPoint charge(long id, long amount) {
-		UserPoint userPoint = userPointTable.selectById(id);
+		return this.insertPointHistoryTable(userPointTable.selectById(id), amount, TransactionType.CHARGE, System.currentTimeMillis());
+	}
 
-		if(userPoint == null) {
-			UserPoint tempUser = userPointTable.insertOrUpdate(id, amount);
-
-			return this.insertPointHistoryTable(tempUser, amount, TransactionType.CHARGE, System.currentTimeMillis());
-		}
-
-		return this.insertPointHistoryTable(userPoint, amount, TransactionType.CHARGE, System.currentTimeMillis());
+	public UserPoint use() {
+		return null;
 	}
 
 	private UserPoint insertPointHistoryTable(UserPoint userPoint, long amount, TransactionType type,  long time) {
