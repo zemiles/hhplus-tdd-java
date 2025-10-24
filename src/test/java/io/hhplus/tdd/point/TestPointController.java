@@ -47,10 +47,10 @@ class TestPointController {
 		// given
 		long id = 1L;
 		long amount = 1000;
-		given(pointService.charge(id, amount)).willReturn(new UserPoint(id, amount, System.currentTimeMillis()));
+		given(pointService.chargeAndUse(id, amount, TransactionType.CHARGE)).willReturn(new UserPoint(id, amount, System.currentTimeMillis()));
 
 		//when
-		UserPoint charge = pointService.charge(id, amount);
+		UserPoint charge = pointService.chargeAndUse(id, amount, TransactionType.CHARGE);
 
 //		mockMvc.perform(patch("/point/{id}/charge", id)
 //						.contentType(MediaType.APPLICATION_JSON)
@@ -62,9 +62,8 @@ class TestPointController {
 
 		//then
 		assertEquals(1L, charge.id());
-//		assertEquals(1000, charge.point());
 
-		verify(pointService, times(1)).charge(id, amount);
+		verify(pointService, times(1)).chargeAndUse(id, amount, TransactionType.CHARGE);
 	}
 
 	@Test
@@ -79,9 +78,11 @@ class TestPointController {
 		long id = 1L;
 		long amount = 1000;
 
-//		UserPoint user = new UserPoint(id, amount, System.currentTimeMillis());
+		UserPoint user = new UserPoint(id, amount, System.currentTimeMillis());
 
-//		pointService.
+//		given(pointService.chargeAndUse(id, amount, TransactionType.USE)).willReturn(new UserPoint(id, amount, System.currentTimeMillis()));
+
+		assertEquals(900, user.point());
 
 	}
 
