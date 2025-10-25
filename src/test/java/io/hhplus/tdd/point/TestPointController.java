@@ -23,8 +23,6 @@ import static org.mockito.Mockito.verify;
 class TestPointController {
 
 	private static final Logger log = LoggerFactory.getLogger(TestPointController.class);
-	@Autowired
-	private MockMvc mockMvc;
 
 	@MockBean
 	private PointService pointService;
@@ -50,14 +48,6 @@ class TestPointController {
 
 		//when
 		UserPoint charge = pointService.chargeAndUse(id, amount, TransactionType.CHARGE);
-
-//		mockMvc.perform(patch("/point/{id}/charge", id)
-//						.contentType(MediaType.APPLICATION_JSON)
-//						.content(String.valueOf(amount)))
-//				.andExpect(status().isOk())
-//				.andExpect(jsonPath("$.id").value(id))
-//				.andExpect(jsonPath("$.point").value(amount));
-
 
 		//then
 		assertEquals(1L, charge.id());
