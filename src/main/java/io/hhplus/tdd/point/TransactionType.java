@@ -7,5 +7,9 @@ package io.hhplus.tdd.point;
  * - USE : 사용
  */
 public enum TransactionType {
-    CHARGE, USE
+    CHARGE, USE;
+
+    public boolean isChargeOrUse() {
+        return this == CHARGE || this == USE;
+    }
 }
